@@ -1,0 +1,7 @@
+.idea
+bin
+shared/pkg/openapi/order/v1/bundle
+node_modules
+
+package-lock.json
+package.json

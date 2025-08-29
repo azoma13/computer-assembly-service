@@ -1,0 +1,139 @@
+version: '3'
+
+vars:
+# version
+  GO_VERSION: '1.24.6'
+  OAPI_CODEGEN_VERSION: 'v2.5.0'
+
+# dir
+  BIN_DIR: '{{.ROOT_DIR}}/bin'
+  NODE_MODULES_DIR: '{{.ROOT_DIR}}/node_modules'
+  SHARED_DIR: "{{.ROOT_DIR}}/shared"
+  OPEN_API_ORDER_V1_DIR: "{{.SHARED_DIR}}/pkg/openapi/order/v1"
+  GEN_API_ORDER_V1_DIR: "{{.SHARED_DIR}}/api/order/v1"
+
+# bin
+  OAPI_CODEGEN: '{{.BIN_DIR}}/oapi-codegen'
+  REDOCLY_CLI: '{{.NODE_MODULES_DIR}}/.bin/redocly'
+
+# file
+  OPEN_API_ORDER_V1_BASE: "{{.OPEN_API_ORDER_V1_DIR}}/order.openapi.yaml"
+  OPEN_API_ORDER_V1_BUNDLE: "{{.OPEN_API_ORDER_V1_DIR}}/bundle/order.v1.bundle.openapi.yaml"
+
+  SILENT: true
+
+tasks:
+  npm:install:
+    desc: Проверка наличия npm и установка, если отсутствует
+    cmds:
+      - |
+        if ! command -v npm &> /dev/null; then
+          echo "📦 Установка npm..."
+          curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          echo "✅ npm успешно установлен."
+        else
+          echo "✅ npm уже установлен."
+        fi
+  
+  redocly-cli:install:
+    desc: Установка redocly-cli
+    deps: [ npm:install ]
+    cmds:
+      - |
+        if [ ! -d "node_modules" ] || [ ! -f "{{.REDOCLY_CLI}}" ]; then
+          echo "📦 Установка redocly-cli..."
+          npm install @redocly/cli --save-dev
+          echo "✅ redocly-cli успешно установлен."
+        else
+          echo "✅ redocly-cli уже установлен."
+        fi
+
+  redocly-cli:order-v1-bundle:
+    desc: Собрать OpenAPI в один файл через redocly-cli
+    deps: [ redocly-cli:install ]
+    cmds:
+      - '{{.REDOCLY_CLI}} bundle {{.OPEN_API_ORDER_V1_BASE}} -o {{.OPEN_API_ORDER_V1_BUNDLE}}'
+
+  oapi-codegen:install:
+    desc: "Скачивает oapi-codegen в папку bin"
+    cmds:
+      - |
+        if [ -f {{.OAPI_CODEGEN}} ]; then
+          echo "📦 Установка oapi-codegen..."
+          mkdir -p {{.BIN_DIR}}
+          GOBIN={{.BIN_DIR}} go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@{{.OAPI_CODEGEN_VERSION}}
+          echo "✅ oapi-codegen успешно установлен."
+        else
+          echo "✅ oapi-codegen уже установлен."
+        fi
+
+  oapi-codegen:gen-server-order:
+    desc: "Генерация Go-кода сервера заказов из OpenAPI-декларации"
+    deps: [ redocly-cli:order-v1-bundle, oapi-codegen:install ]
+    cmds: 
+      - '{{.OAPI_CODEGEN}} -config {{.OPEN_API_ORDER_V1_DIR}}/server.cfg.yaml {{.OPEN_API_ORDER_V1_BUNDLE}}'
+
+  oapi-codegen:gen-models-order:
+    desc: "Генерация Go-кода моделей заказов из OpenAPI-декларации"
+    deps: [ redocly-cli:order-v1-bundle, oapi-codegen:install ]
+    cmds: 
+      - '{{.OAPI_CODEGEN}} -config {{.OPEN_API_ORDER_V1_DIR}}/models.cfg.yaml {{.OPEN_API_ORDER_V1_BUNDLE}}'
+  
+  oapi-codegen:gen:
+    desc: "Генерация Go-кода сервиса заказов из OpenAPI-декларации"
+    cmds: 
+      - task: oapi-codegen:gen-models-order
+      - task: oapi-codegen:gen-server-order
+      - |
+        cd {{.SHARED_DIR}}
+        go mod tidy
+
+  go-run-order:
+    desc: Запускает сервис заказа
+    silent: true
+    cmds:
+      - |
+        echo "🚀 Запуск сервиса заказа..."
+        go run order/cmd/main.go
+
+  go-run-hardware:
+    desc: "Запускает сервиса комплектующих"
+    silent: true
+    cmds:
+      - |
+        echo "🚀 Запуск сервиса комплектующих..."
+        go run hardware/cmd/main.go
+
+  go-run-payment:
+    desc: "Запускает сервис оплаты"
+    silent: true
+    cmds:
+      - |
+        echo "🚀 Запуск сервиса оплаты..."
+        go run payment/cmd/main.go
+
+  go-run-all:
+    desc: "Запуск всех сервисов"
+    cmds:
+      - task: go-run-order
+      - task: go-run-hardware
+      - task: go-run-payment
+
+  delete-npm:
+    desc: "Удаляет nodejs и npm"
+    cmds:
+      - |
+        sudo apt remove nodejs npm
+        sudo apt-get purge nodejs
+        sudo rm -rf /usr/local/bin/npm 
+        sudo rm -rf /usr/local/share/man/man1/node* 
+        sudo rm -rf /usr/local/lib/dtrace/node.d
+        sudo rm -rf ~/.npm
+        sudo rm -rf ~/.node-gyp
+        sudo rm -rf /opt/local/bin/node
+        sudo rm -rf /opt/local/include/node
+        sudo rm -rf /opt/local/lib/node_modules
+        sudo rm -rf /usr/local/lib/node*
+        sudo rm -rf /usr/local/include/node*
+        sudo rm -rf /usr/local/bin/node*

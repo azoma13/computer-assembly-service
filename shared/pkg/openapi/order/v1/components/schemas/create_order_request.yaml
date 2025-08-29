@@ -1,0 +1,16 @@
+type: object
+required:
+  - user_uuid
+  - hardware_uuids
+properties:
+  user_uuid:
+    type: string
+    format: uuid
+    description: UUID пользователя
+  hardware_uuids:
+    type: array
+    description: Список UUID компонентов в заказе
+    items:
+      type: string
+      format: uuid
+      description: UUID компонента

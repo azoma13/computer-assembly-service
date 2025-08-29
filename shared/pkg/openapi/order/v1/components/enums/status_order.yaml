@@ -1,0 +1,10 @@
+type: string
+description: |
+  Статус платежа 
+    - NOT_PAID: не оплачено
+    - PAID: оплачено
+    - CANCELLED: Отменён 
+enum:
+  - NOT_PAID
+  - PAID
+  - CANCELLED

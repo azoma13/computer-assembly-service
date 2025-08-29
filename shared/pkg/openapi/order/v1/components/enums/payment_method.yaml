@@ -1,0 +1,10 @@
+type: string
+description: |
+  Способ оплаты
+  - CASH: оплата наличными
+  - CARD: оплата картой
+  - SBP: оплата через СБП
+enum:
+  - CASH
+  - CARD
+  - SBP

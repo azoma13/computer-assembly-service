@@ -1,0 +1,32 @@
+openapi: 3.0.3
+info:
+  title: OrderService API
+  description: API для работы с заказами сборки компьютеров
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: https://order.swagger.io/api/v1
+tags:
+  - name: Order
+    description: Операции с заказами - создать, найти, отменить, изменить статус оплаты
+#security:
+#  - BearerAuth: [] 
+
+paths:
+  /api/v1/order:
+    $ref: ./paths/create_order.yaml
+  /api/v1/orders/{order_uuid}:
+    $ref: "./paths/get_order_by_uuid.yaml"
+  /api/v1/orders/{order_uuid}/cancel:
+    $ref: "./paths/cancel_order.yaml"
+  /api/v1/orders/{order_uuid}/pay:
+    $ref: "./paths/payment_order.yaml"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
