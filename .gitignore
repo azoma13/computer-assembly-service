@@ -1,6 +1,7 @@
 .idea
 bin
 shared/pkg/openapi/order/v1/bundle
+shared/pkg/proto/google
 node_modules
 
 package-lock.json

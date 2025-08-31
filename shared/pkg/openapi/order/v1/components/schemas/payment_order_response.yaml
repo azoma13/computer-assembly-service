@@ -12,7 +12,3 @@ properties:
     type: string
     format: date-time
     description: Время последнего обновления
-  created_at:
-    type: string
-    format: date-time
-    description: Время создания

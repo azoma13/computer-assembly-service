@@ -4,27 +4,37 @@ vars:
 # version
   GO_VERSION: '1.24.6'
   OAPI_CODEGEN_VERSION: 'v2.5.0'
+  PROTOC_VERSION: '32.0'
+  PROTOC_GEN_GO_VERSION: 'v1.36.8'
+  PROTOC_GEN_GO_GRPC_VERSION: 'v1.5.1'
 
 # dir
   BIN_DIR: '{{.ROOT_DIR}}/bin'
   NODE_MODULES_DIR: '{{.ROOT_DIR}}/node_modules'
-  SHARED_DIR: "{{.ROOT_DIR}}/shared"
-  OPEN_API_ORDER_V1_DIR: "{{.SHARED_DIR}}/pkg/openapi/order/v1"
-  GEN_API_ORDER_V1_DIR: "{{.SHARED_DIR}}/api/order/v1"
+  SHARED_DIR: '{{.ROOT_DIR}}/shared'
+  OPEN_API_ORDER_V1_DIR: '{{.SHARED_DIR}}/pkg/openapi/order/v1'
+  GEN_API_ORDER_V1_DIR: '{{.SHARED_DIR}}/api/order/v1'
+  PROTO_DIR: '{{.SHARED_DIR}}/pkg/proto'
+  GEN_PROTO_V1: '{{.SHARED_DIR}}/proto'
 
 # bin
-  OAPI_CODEGEN: '{{.BIN_DIR}}/oapi-codegen'
   REDOCLY_CLI: '{{.NODE_MODULES_DIR}}/.bin/redocly'
+  OAPI_CODEGEN: '{{.BIN_DIR}}/oapi-codegen'
+  PROTOC: '{{.BIN_DIR}}/protoc'
+  PROTOC_GEN_GO: '{{.BIN_DIR}}/protoc-gen-go'
+  PROTOC_GEN_GO_GRPC: '{{.BIN_DIR}}/protoc-gen-go-grpc'
 
 # file
-  OPEN_API_ORDER_V1_BASE: "{{.OPEN_API_ORDER_V1_DIR}}/order.openapi.yaml"
-  OPEN_API_ORDER_V1_BUNDLE: "{{.OPEN_API_ORDER_V1_DIR}}/bundle/order.v1.bundle.openapi.yaml"
+  OPEN_API_ORDER_V1_BASE: '{{.OPEN_API_ORDER_V1_DIR}}/order.v1.openapi.yaml'
+  OPEN_API_ORDER_V1_BUNDLE: '{{.OPEN_API_ORDER_V1_DIR}}/bundle/order.v1.bundle.openapi.yaml'
+  PROTO_HARDWARE_V1: '{{.PROTO_DIR}}/hardware/v1/hardware.proto'
+  PROTO_PAYMENT_V1: '{{.PROTO_DIR}}/payment/v1/payment.proto'
 
-  SILENT: true
 
 tasks:
   npm:install:
-    desc: Проверка наличия npm и установка, если отсутствует
+    desc: Проверяет наличия npm и устанавливает, если отсутствует
+    silent: true
     cmds:
       - |
         if ! command -v npm &> /dev/null; then
@@ -37,7 +47,8 @@ tasks:
         fi
   
   redocly-cli:install:
-    desc: Установка redocly-cli
+    desc: Устанавливает redocly-cli
+    silent: true
     deps: [ npm:install ]
     cmds:
       - |
@@ -50,16 +61,21 @@ tasks:
         fi
 
   redocly-cli:order-v1-bundle:
-    desc: Собрать OpenAPI в один файл через redocly-cli
+    desc: Собирает OpenAPI в один файл через redocly-cli
+    silent: true
     deps: [ redocly-cli:install ]
     cmds:
-      - '{{.REDOCLY_CLI}} bundle {{.OPEN_API_ORDER_V1_BASE}} -o {{.OPEN_API_ORDER_V1_BUNDLE}}'
+      - |
+        echo "⏳Собирает OpenAPI в один файл через redocly-cli..."
+        {{.REDOCLY_CLI}} bundle {{.OPEN_API_ORDER_V1_BASE}} -o {{.OPEN_API_ORDER_V1_BUNDLE}}
+        echo "✅ Успешная сборка OpenAPI в один файл через redocly-cli"
 
   oapi-codegen:install:
-    desc: "Скачивает oapi-codegen в папку bin"
+    desc: Скачивает oapi-codegen в папку bin
+    silent: true
     cmds:
       - |
-        if [ -f {{.OAPI_CODEGEN}} ]; then
+        if [ ! -f {{.OAPI_CODEGEN}} ]; then
           echo "📦 Установка oapi-codegen..."
           mkdir -p {{.BIN_DIR}}
           GOBIN={{.BIN_DIR}} go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@{{.OAPI_CODEGEN_VERSION}}
@@ -69,25 +85,155 @@ tasks:
         fi
 
   oapi-codegen:gen-server-order:
-    desc: "Генерация Go-кода сервера заказов из OpenAPI-декларации"
+    desc: Генерирует Go-кода сервера заказов из OpenAPI-декларации
+    silent: true
     deps: [ redocly-cli:order-v1-bundle, oapi-codegen:install ]
     cmds: 
-      - '{{.OAPI_CODEGEN}} -config {{.OPEN_API_ORDER_V1_DIR}}/server.cfg.yaml {{.OPEN_API_ORDER_V1_BUNDLE}}'
+      - |
+        echo "⏳Генерация Go-кода сервера заказов из OpenAPI-декларации..."
+        {{.OAPI_CODEGEN}} -config {{.OPEN_API_ORDER_V1_DIR}}/server.cfg.yaml {{.OPEN_API_ORDER_V1_BUNDLE}}
+        cd {{.SHARED_DIR}}
+        go mod tidy
+        echo "✅ Успешная генерация Go-кода сервера заказов"
+
+  oapi-codegen:gen-server-order-no-deps:
+    desc: Генерирует Go-кода сервера заказов из OpenAPI-декларации
+    silent: true
+    cmds: 
+      - |
+        echo "⏳Генерация Go-кода сервера заказов из OpenAPI-декларации..."
+        {{.OAPI_CODEGEN}} -config {{.OPEN_API_ORDER_V1_DIR}}/server.cfg.yaml {{.OPEN_API_ORDER_V1_BUNDLE}}
+        cd {{.SHARED_DIR}}
+        go mod tidy
+        echo "✅ Успешная генерация Go-кода сервера заказов"
 
   oapi-codegen:gen-models-order:
-    desc: "Генерация Go-кода моделей заказов из OpenAPI-декларации"
+    desc: Генерирует Go-кода моделей заказов из OpenAPI-декларации
+    silent: true
     deps: [ redocly-cli:order-v1-bundle, oapi-codegen:install ]
     cmds: 
-      - '{{.OAPI_CODEGEN}} -config {{.OPEN_API_ORDER_V1_DIR}}/models.cfg.yaml {{.OPEN_API_ORDER_V1_BUNDLE}}'
+      - |
+        echo "⏳Генерация Go-кода моделей заказов из OpenAPI-декларации..."
+        {{.OAPI_CODEGEN}} -config {{.OPEN_API_ORDER_V1_DIR}}/models.cfg.yaml {{.OPEN_API_ORDER_V1_BUNDLE}}
+        cd {{.SHARED_DIR}}
+        go mod tidy
+        echo "✅ Успешная генерация Go-кода моделей заказов"
   
-  oapi-codegen:gen:
-    desc: "Генерация Go-кода сервиса заказов из OpenAPI-декларации"
+  oapi-codegen:gen-models-order-no-deps:
+    desc: Генерирует Go-кода моделей заказов из OpenAPI-декларации
+    silent: true
     cmds: 
-      - task: oapi-codegen:gen-models-order
-      - task: oapi-codegen:gen-server-order
+      - |
+        echo "⏳Генерация Go-кода моделей заказов из OpenAPI-декларации..."
+        {{.OAPI_CODEGEN}} -config {{.OPEN_API_ORDER_V1_DIR}}/models.cfg.yaml {{.OPEN_API_ORDER_V1_BUNDLE}}
+        cd {{.SHARED_DIR}}
+        go mod tidy
+        echo "✅ Успешная генерация Go-кода моделей заказов"
+
+  oapi-codegen:gen:
+    desc: Генерация Go-кода сервиса заказов из OpenAPI-декларации
+    deps: [ redocly-cli:order-v1-bundle, oapi-codegen:install ]
+    silent: true
+    cmds: 
+      - task: oapi-codegen:gen-models-order-no-deps
+      - task: oapi-codegen:gen-server-order-no-deps
       - |
         cd {{.SHARED_DIR}}
         go mod tidy
+
+  proto:install:
+    desc: Устанавливает buf
+    silent: true
+    cmds:
+      - |
+        if [ ! -f {{.PROTOC}} ]; then
+          echo "📦 Установка protoc..."
+          mkdir -p {{.BIN_DIR}}
+          sudo apt-get install unzip
+          curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v{{.PROTOC_VERSION}}/protoc-{{.PROTOC_VERSION}}-linux-x86_64.zip
+          unzip protoc-{{.PROTOC_VERSION}}-linux-x86_64.zip
+          sudo rm -rf readme.txt protoc-{{.PROTOC_VERSION}}-linux-x86_64.zip
+          cp -r include/google shared/pkg/proto && rm -R ./include
+          sudo apt-get remove -y unzip
+          echo "✅ protoc успешно установлен."
+        else
+          echo "✅ protoc уже установлен."
+        fi
+
+  proto-plugins:install:
+    desc: Устанавливает protoc плагины
+    silent: true
+    deps: [ proto:install ]
+    cmds:
+      - |
+        if [ ! -f {{.PROTOC_GEN_GO}} ]; then
+          echo '📦 Installing protoc-gen-go...'
+          GOBIN={{.BIN_DIR}} go install google.golang.org/protobuf/cmd/protoc-gen-go@{{.PROTOC_GEN_GO_VERSION}}
+          echo "✅ protoc-gen-go успешно установлен."
+        else
+          echo "✅ protoc-gen-go уже установлен."
+        fi
+        if [ ! -f {{.PROTOC_GEN_GO_GRPC}} ]; then
+          echo '📦 Installing protoc-gen-go-grpc...'
+          GOBIN={{.BIN_DIR}} go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@{{.PROTOC_GEN_GO_GRPC_VERSION}}
+          echo "✅ protoc-gen-go-grpc успешно установлен."
+        else
+          echo "✅ protoc-gen-go-grpc уже установлен."
+        fi
+  
+  proto:gen-hardware:
+    desc: Генерация Go-кода из proto-файла для сервиса заказа
+    silent: true
+    deps: [ proto-plugins:install ]
+    cmds:
+      - |
+        echo "⏳Генерация Go-кода из proto-файла для сервиса заказа..."
+        {{.PROTOC}} -I {{.PROTO_DIR}} {{.PROTO_HARDWARE_V1}} --go_out={{.GEN_PROTO_V1}} --go_opt=paths=source_relative --plugin=bin/protoc-gen-go --go-grpc_out={{.GEN_PROTO_V1}} --go-grpc_opt=paths=source_relative --plugin=bin/protoc-gen-go-grpc
+        cd {{.SHARED_DIR}}
+        go mod tidy
+        echo "✅ Успешная генерация Go-кода из proto-файла для сервиса заказа"
+
+  proto:gen-hardware-no-deps:
+    desc: Генерация Go-кода из proto-файла для сервиса заказа
+    silent: true
+    cmds:
+      - |
+        echo "⏳Генерация Go-кода из proto-файла для сервиса заказа..."
+        {{.PROTOC}} -I {{.PROTO_DIR}} {{.PROTO_HARDWARE_V1}} --go_out={{.GEN_PROTO_V1}} --go_opt=paths=source_relative --plugin=bin/protoc-gen-go --go-grpc_out={{.GEN_PROTO_V1}} --go-grpc_opt=paths=source_relative --plugin=bin/protoc-gen-go-grpc
+        cd {{.SHARED_DIR}}
+        go mod tidy
+        echo "✅ Успешная генерация Go-кода из proto-файла для сервиса заказа"
+
+  proto:gen-payment:
+    desc: Генерация Go-кода из proto-файла для сервиса оплаты
+    silent: true
+    deps: [ proto-plugins:install ]
+    cmds:
+      - |
+        echo "⏳Генерация Go-кода из proto-файла для сервиса оплаты..."
+        {{.PROTOC}} -I {{.PROTO_DIR}} {{.PROTO_PAYMENT_V1}} --go_out={{.GEN_PROTO_V1}} --go_opt=paths=source_relative --plugin=bin/protoc-gen-go --go-grpc_out={{.GEN_PROTO_V1}} --go-grpc_opt=paths=source_relative --plugin=bin/protoc-gen-go-grpc
+        cd {{.SHARED_DIR}}
+        go mod tidy
+        echo "✅ Успешная генерация Go-кода из proto-файла для сервиса оплаты"
+
+  proto:gen-payment-no-deps:
+    desc: Генерация Go-кода из proto-файла для сервиса оплаты
+    silent: true
+    cmds:
+      - |
+        echo "⏳Генерация Go-кода из proto-файла для сервиса оплаты..."
+        {{.PROTOC}} -I {{.PROTO_DIR}} {{.PROTO_PAYMENT_V1}} --go_out={{.GEN_PROTO_V1}} --go_opt=paths=source_relative --plugin=bin/protoc-gen-go --go-grpc_out={{.GEN_PROTO_V1}} --go-grpc_opt=paths=source_relative --plugin=bin/protoc-gen-go-grpc
+        cd {{.SHARED_DIR}}
+        go mod tidy
+        echo "✅ Успешная генерация Go-кода из proto-файла для сервиса оплаты"
+
+  proto:gen:
+    desc: Генерация Go-кода из proto-файла для сервиса заказа
+    silent: true
+    deps: [ proto-plugins:install ]
+    cmds:
+      - task: proto:gen-hardware-no-deps
+      - task: proto:gen-payment-no-deps
 
   go-run-order:
     desc: Запускает сервис заказа
@@ -122,6 +268,7 @@ tasks:
 
   delete-npm:
     desc: "Удаляет nodejs и npm"
+    silent: true
     cmds:
       - |
         sudo apt remove nodejs npm

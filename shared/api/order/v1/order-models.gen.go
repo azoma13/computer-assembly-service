@@ -11,9 +11,10 @@ import (
 
 // Defines values for PaymentMethod.
 const (
-	CARD PaymentMethod = "CARD"
-	CASH PaymentMethod = "CASH"
-	SBP  PaymentMethod = "SBP"
+	CARD      PaymentMethod = "CARD"
+	CASH      PaymentMethod = "CASH"
+	SBP       PaymentMethod = "SBP"
+	UNDEFINED PaymentMethod = "UNDEFINED"
 )
 
 // Defines values for StatusOrder.
@@ -120,6 +121,7 @@ type Payment struct {
 	CreatedAt time.Time `json:"created_at"`
 
 	// PaymentMethod Способ оплаты
+	// - UNDEFINED: не определенный
 	// - CASH: оплата наличными
 	// - CARD: оплата картой
 	// - SBP: оплата через СБП
@@ -133,6 +135,7 @@ type Payment struct {
 }
 
 // PaymentMethod Способ оплаты
+// - UNDEFINED: не определенный
 // - CASH: оплата наличными
 // - CARD: оплата картой
 // - SBP: оплата через СБП
@@ -141,23 +144,15 @@ type PaymentMethod string
 // PaymentOrderRequest defines model for payment_order_request.
 type PaymentOrderRequest struct {
 	// PaymentMethod Способ оплаты
+	// - UNDEFINED: не определенный
 	// - CASH: оплата наличными
 	// - CARD: оплата картой
 	// - SBP: оплата через СБП
 	PaymentMethod PaymentMethod `json:"payment_method"`
-
-	// Status Статус платежа
-	//   - NOT_PAID: не оплачено
-	//   - PAID: оплачено
-	//   - CANCELLED: Отменён
-	Status *StatusOrder `json:"status,omitempty"`
 }
 
 // PaymentOrderResponse defines model for payment_order_response.
 type PaymentOrderResponse struct {
-	// CreatedAt Время создания
-	CreatedAt time.Time `json:"created_at"`
-
 	// TransactionUuid Уникальный идентификатор транзакции
 	TransactionUuid openapi_types.UUID `json:"transaction_uuid"`
 

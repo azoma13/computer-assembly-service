@@ -4,5 +4,3 @@ required:
 properties:
   payment_method:
     $ref: "../enums/payment_method.yaml"
-  status:
-    $ref: "../enums/status_order.yaml"
