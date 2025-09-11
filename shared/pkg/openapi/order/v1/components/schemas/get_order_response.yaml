@@ -5,7 +5,6 @@ required:
   - hardware_uuids
   - total_price
   - status
-  - updated_at
   - created_at
 properties:
   order_uuid:

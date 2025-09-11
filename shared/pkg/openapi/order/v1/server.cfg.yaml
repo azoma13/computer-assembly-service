@@ -1,4 +1,0 @@
-package: order_v1
-generate:
-  echo-server: true
-output: shared/api/order/v1/order-server.gen.go

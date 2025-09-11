@@ -1,4 +1,0 @@
-package: order_v1
-generate:
-    models: true    
-output: shared/api/order/v1/order-models.gen.go

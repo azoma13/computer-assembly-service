@@ -11,7 +11,7 @@ post:
           $ref: "../components/schemas/create_order_request.yaml"
   responses:
     '200':
-      description: Payment was successful
+      description: Order is created
       content:
         application/json:
           schema:
