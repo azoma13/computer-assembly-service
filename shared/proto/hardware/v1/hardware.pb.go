@@ -440,194 +440,6 @@ func (x *Manufacturer) GetWebsite() string {
 	return ""
 }
 
-type ListHardwaresRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Filter        *HardwaresFilter       `protobuf:"bytes,1,opt,name=filter,proto3,oneof" json:"filter,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListHardwaresRequest) Reset() {
-	*x = ListHardwaresRequest{}
-	mi := &file_hardware_v1_hardware_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListHardwaresRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListHardwaresRequest) ProtoMessage() {}
-
-func (x *ListHardwaresRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_hardware_v1_hardware_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListHardwaresRequest.ProtoReflect.Descriptor instead.
-func (*ListHardwaresRequest) Descriptor() ([]byte, []int) {
-	return file_hardware_v1_hardware_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *ListHardwaresRequest) GetFilter() *HardwaresFilter {
-	if x != nil {
-		return x.Filter
-	}
-	return nil
-}
-
-type ListHardwaresResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Hardwares     []*Hardware            `protobuf:"bytes,1,rep,name=hardwares,proto3" json:"hardwares,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListHardwaresResponse) Reset() {
-	*x = ListHardwaresResponse{}
-	mi := &file_hardware_v1_hardware_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListHardwaresResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListHardwaresResponse) ProtoMessage() {}
-
-func (x *ListHardwaresResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_hardware_v1_hardware_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListHardwaresResponse.ProtoReflect.Descriptor instead.
-func (*ListHardwaresResponse) Descriptor() ([]byte, []int) {
-	return file_hardware_v1_hardware_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *ListHardwaresResponse) GetHardwares() []*Hardware {
-	if x != nil {
-		return x.Hardwares
-	}
-	return nil
-}
-
-type HardwaresFilter struct {
-	state                 protoimpl.MessageState `protogen:"open.v1"`
-	Uuids                 []string               `protobuf:"bytes,1,rep,name=uuids,proto3" json:"uuids,omitempty"`
-	Names                 []string               `protobuf:"bytes,2,rep,name=names,proto3" json:"names,omitempty"`
-	MinPrice              float64                `protobuf:"fixed64,3,opt,name=min_price,json=minPrice,proto3" json:"min_price,omitempty"`
-	MaxPrice              float64                `protobuf:"fixed64,4,opt,name=max_price,json=maxPrice,proto3" json:"max_price,omitempty"`
-	QuantityStock         int64                  `protobuf:"varint,5,opt,name=quantity_stock,json=quantityStock,proto3" json:"quantity_stock,omitempty"`
-	Categories            []Category             `protobuf:"varint,6,rep,packed,name=categories,proto3,enum=hardware.v1.Category" json:"categories,omitempty"`
-	ManufacturerCountries []string               `protobuf:"bytes,7,rep,name=manufacturer_countries,json=manufacturerCountries,proto3" json:"manufacturer_countries,omitempty"`
-	Tags                  []string               `protobuf:"bytes,8,rep,name=tags,proto3" json:"tags,omitempty"`
-	unknownFields         protoimpl.UnknownFields
-	sizeCache             protoimpl.SizeCache
-}
-
-func (x *HardwaresFilter) Reset() {
-	*x = HardwaresFilter{}
-	mi := &file_hardware_v1_hardware_proto_msgTypes[7]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *HardwaresFilter) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*HardwaresFilter) ProtoMessage() {}
-
-func (x *HardwaresFilter) ProtoReflect() protoreflect.Message {
-	mi := &file_hardware_v1_hardware_proto_msgTypes[7]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use HardwaresFilter.ProtoReflect.Descriptor instead.
-func (*HardwaresFilter) Descriptor() ([]byte, []int) {
-	return file_hardware_v1_hardware_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *HardwaresFilter) GetUuids() []string {
-	if x != nil {
-		return x.Uuids
-	}
-	return nil
-}
-
-func (x *HardwaresFilter) GetNames() []string {
-	if x != nil {
-		return x.Names
-	}
-	return nil
-}
-
-func (x *HardwaresFilter) GetMinPrice() float64 {
-	if x != nil {
-		return x.MinPrice
-	}
-	return 0
-}
-
-func (x *HardwaresFilter) GetMaxPrice() float64 {
-	if x != nil {
-		return x.MaxPrice
-	}
-	return 0
-}
-
-func (x *HardwaresFilter) GetQuantityStock() int64 {
-	if x != nil {
-		return x.QuantityStock
-	}
-	return 0
-}
-
-func (x *HardwaresFilter) GetCategories() []Category {
-	if x != nil {
-		return x.Categories
-	}
-	return nil
-}
-
-func (x *HardwaresFilter) GetManufacturerCountries() []string {
-	if x != nil {
-		return x.ManufacturerCountries
-	}
-	return nil
-}
-
-func (x *HardwaresFilter) GetTags() []string {
-	if x != nil {
-		return x.Tags
-	}
-	return nil
-}
-
 type Value struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to Kind:
@@ -643,7 +455,7 @@ type Value struct {
 
 func (x *Value) Reset() {
 	*x = Value{}
-	mi := &file_hardware_v1_hardware_proto_msgTypes[8]
+	mi := &file_hardware_v1_hardware_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -655,7 +467,7 @@ func (x *Value) String() string {
 func (*Value) ProtoMessage() {}
 
 func (x *Value) ProtoReflect() protoreflect.Message {
-	mi := &file_hardware_v1_hardware_proto_msgTypes[8]
+	mi := &file_hardware_v1_hardware_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -668,7 +480,7 @@ func (x *Value) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Value.ProtoReflect.Descriptor instead.
 func (*Value) Descriptor() ([]byte, []int) {
-	return file_hardware_v1_hardware_proto_rawDescGZIP(), []int{8}
+	return file_hardware_v1_hardware_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Value) GetKind() isValue_Kind {
@@ -742,6 +554,194 @@ func (*Value_DoubleValue) isValue_Kind() {}
 
 func (*Value_BoolValue) isValue_Kind() {}
 
+type ListHardwaresRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Filter        *HardwaresFilter       `protobuf:"bytes,1,opt,name=filter,proto3,oneof" json:"filter,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListHardwaresRequest) Reset() {
+	*x = ListHardwaresRequest{}
+	mi := &file_hardware_v1_hardware_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListHardwaresRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListHardwaresRequest) ProtoMessage() {}
+
+func (x *ListHardwaresRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_hardware_v1_hardware_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListHardwaresRequest.ProtoReflect.Descriptor instead.
+func (*ListHardwaresRequest) Descriptor() ([]byte, []int) {
+	return file_hardware_v1_hardware_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ListHardwaresRequest) GetFilter() *HardwaresFilter {
+	if x != nil {
+		return x.Filter
+	}
+	return nil
+}
+
+type ListHardwaresResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Hardwares     []*Hardware            `protobuf:"bytes,1,rep,name=hardwares,proto3" json:"hardwares,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListHardwaresResponse) Reset() {
+	*x = ListHardwaresResponse{}
+	mi := &file_hardware_v1_hardware_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListHardwaresResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListHardwaresResponse) ProtoMessage() {}
+
+func (x *ListHardwaresResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_hardware_v1_hardware_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListHardwaresResponse.ProtoReflect.Descriptor instead.
+func (*ListHardwaresResponse) Descriptor() ([]byte, []int) {
+	return file_hardware_v1_hardware_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *ListHardwaresResponse) GetHardwares() []*Hardware {
+	if x != nil {
+		return x.Hardwares
+	}
+	return nil
+}
+
+type HardwaresFilter struct {
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	Uuids                 []string               `protobuf:"bytes,1,rep,name=uuids,proto3" json:"uuids,omitempty"`
+	Names                 []string               `protobuf:"bytes,2,rep,name=names,proto3" json:"names,omitempty"`
+	MinPrice              float64                `protobuf:"fixed64,3,opt,name=min_price,json=minPrice,proto3" json:"min_price,omitempty"`
+	MaxPrice              float64                `protobuf:"fixed64,4,opt,name=max_price,json=maxPrice,proto3" json:"max_price,omitempty"`
+	QuantityStock         int64                  `protobuf:"varint,5,opt,name=quantity_stock,json=quantityStock,proto3" json:"quantity_stock,omitempty"`
+	Categories            []Category             `protobuf:"varint,6,rep,packed,name=categories,proto3,enum=hardware.v1.Category" json:"categories,omitempty"`
+	ManufacturerCountries []string               `protobuf:"bytes,7,rep,name=manufacturer_countries,json=manufacturerCountries,proto3" json:"manufacturer_countries,omitempty"`
+	Tags                  []string               `protobuf:"bytes,8,rep,name=tags,proto3" json:"tags,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
+}
+
+func (x *HardwaresFilter) Reset() {
+	*x = HardwaresFilter{}
+	mi := &file_hardware_v1_hardware_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *HardwaresFilter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HardwaresFilter) ProtoMessage() {}
+
+func (x *HardwaresFilter) ProtoReflect() protoreflect.Message {
+	mi := &file_hardware_v1_hardware_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HardwaresFilter.ProtoReflect.Descriptor instead.
+func (*HardwaresFilter) Descriptor() ([]byte, []int) {
+	return file_hardware_v1_hardware_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *HardwaresFilter) GetUuids() []string {
+	if x != nil {
+		return x.Uuids
+	}
+	return nil
+}
+
+func (x *HardwaresFilter) GetNames() []string {
+	if x != nil {
+		return x.Names
+	}
+	return nil
+}
+
+func (x *HardwaresFilter) GetMinPrice() float64 {
+	if x != nil {
+		return x.MinPrice
+	}
+	return 0
+}
+
+func (x *HardwaresFilter) GetMaxPrice() float64 {
+	if x != nil {
+		return x.MaxPrice
+	}
+	return 0
+}
+
+func (x *HardwaresFilter) GetQuantityStock() int64 {
+	if x != nil {
+		return x.QuantityStock
+	}
+	return 0
+}
+
+func (x *HardwaresFilter) GetCategories() []Category {
+	if x != nil {
+		return x.Categories
+	}
+	return nil
+}
+
+func (x *HardwaresFilter) GetManufacturerCountries() []string {
+	if x != nil {
+		return x.ManufacturerCountries
+	}
+	return nil
+}
+
+func (x *HardwaresFilter) GetTags() []string {
+	if x != nil {
+		return x.Tags
+	}
+	return nil
+}
+
 var File_hardware_v1_hardware_proto protoreflect.FileDescriptor
 
 const file_hardware_v1_hardware_proto_rawDesc = "" +
@@ -781,7 +781,15 @@ const file_hardware_v1_hardware_proto_rawDesc = "" +
 	"\fManufacturer\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
 	"\acountry\x18\x02 \x01(\tR\acountry\x12\x18\n" +
-	"\awebsite\x18\x03 \x01(\tR\awebsite\"\\\n" +
+	"\awebsite\x18\x03 \x01(\tR\awebsite\"\x9d\x01\n" +
+	"\x05Value\x12#\n" +
+	"\fstring_value\x18\x01 \x01(\tH\x00R\vstringValue\x12!\n" +
+	"\vint64_value\x18\x02 \x01(\x03H\x00R\n" +
+	"int64Value\x12#\n" +
+	"\fdouble_value\x18\x03 \x01(\x01H\x00R\vdoubleValue\x12\x1f\n" +
+	"\n" +
+	"bool_value\x18\x04 \x01(\bH\x00R\tboolValueB\x06\n" +
+	"\x04kind\"\\\n" +
 	"\x14ListHardwaresRequest\x129\n" +
 	"\x06filter\x18\x01 \x01(\v2\x1c.hardware.v1.HardwaresFilterH\x00R\x06filter\x88\x01\x01B\t\n" +
 	"\a_filter\"L\n" +
@@ -797,15 +805,7 @@ const file_hardware_v1_hardware_proto_rawDesc = "" +
 	"categories\x18\x06 \x03(\x0e2\x15.hardware.v1.CategoryR\n" +
 	"categories\x125\n" +
 	"\x16manufacturer_countries\x18\a \x03(\tR\x15manufacturerCountries\x12\x12\n" +
-	"\x04tags\x18\b \x03(\tR\x04tags\"\x9d\x01\n" +
-	"\x05Value\x12#\n" +
-	"\fstring_value\x18\x01 \x01(\tH\x00R\vstringValue\x12!\n" +
-	"\vint64_value\x18\x02 \x01(\x03H\x00R\n" +
-	"int64Value\x12#\n" +
-	"\fdouble_value\x18\x03 \x01(\x01H\x00R\vdoubleValue\x12\x1f\n" +
-	"\n" +
-	"bool_value\x18\x04 \x01(\bH\x00R\tboolValueB\x06\n" +
-	"\x04kind*\xe3\x01\n" +
+	"\x04tags\x18\b \x03(\tR\x04tags*\xe3\x01\n" +
 	"\bCategory\x12\x18\n" +
 	"\x14CATEGORY_UNSPECIFIED\x10\x00\x12\x18\n" +
 	"\x14CATEGORY_MOTHERBOARD\x10\x01\x12\x10\n" +
@@ -843,10 +843,10 @@ var file_hardware_v1_hardware_proto_goTypes = []any{
 	(*Hardware)(nil),              // 3: hardware.v1.Hardware
 	(*Dimensions)(nil),            // 4: hardware.v1.Dimensions
 	(*Manufacturer)(nil),          // 5: hardware.v1.Manufacturer
-	(*ListHardwaresRequest)(nil),  // 6: hardware.v1.ListHardwaresRequest
-	(*ListHardwaresResponse)(nil), // 7: hardware.v1.ListHardwaresResponse
-	(*HardwaresFilter)(nil),       // 8: hardware.v1.HardwaresFilter
-	(*Value)(nil),                 // 9: hardware.v1.Value
+	(*Value)(nil),                 // 6: hardware.v1.Value
+	(*ListHardwaresRequest)(nil),  // 7: hardware.v1.ListHardwaresRequest
+	(*ListHardwaresResponse)(nil), // 8: hardware.v1.ListHardwaresResponse
+	(*HardwaresFilter)(nil),       // 9: hardware.v1.HardwaresFilter
 	nil,                           // 10: hardware.v1.Hardware.MetadateEntry
 	(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
 }
@@ -858,14 +858,14 @@ var file_hardware_v1_hardware_proto_depIdxs = []int32{
 	10, // 4: hardware.v1.Hardware.metadate:type_name -> hardware.v1.Hardware.MetadateEntry
 	11, // 5: hardware.v1.Hardware.updated_at:type_name -> google.protobuf.Timestamp
 	11, // 6: hardware.v1.Hardware.created_at:type_name -> google.protobuf.Timestamp
-	8,  // 7: hardware.v1.ListHardwaresRequest.filter:type_name -> hardware.v1.HardwaresFilter
+	9,  // 7: hardware.v1.ListHardwaresRequest.filter:type_name -> hardware.v1.HardwaresFilter
 	3,  // 8: hardware.v1.ListHardwaresResponse.hardwares:type_name -> hardware.v1.Hardware
 	0,  // 9: hardware.v1.HardwaresFilter.categories:type_name -> hardware.v1.Category
-	9,  // 10: hardware.v1.Hardware.MetadateEntry.value:type_name -> hardware.v1.Value
+	6,  // 10: hardware.v1.Hardware.MetadateEntry.value:type_name -> hardware.v1.Value
 	1,  // 11: hardware.v1.HardwareService.GetHardware:input_type -> hardware.v1.GetHardwareRequest
-	6,  // 12: hardware.v1.HardwareService.ListHardwares:input_type -> hardware.v1.ListHardwaresRequest
+	7,  // 12: hardware.v1.HardwareService.ListHardwares:input_type -> hardware.v1.ListHardwaresRequest
 	2,  // 13: hardware.v1.HardwareService.GetHardware:output_type -> hardware.v1.GetHardwareResponse
-	7,  // 14: hardware.v1.HardwareService.ListHardwares:output_type -> hardware.v1.ListHardwaresResponse
+	8,  // 14: hardware.v1.HardwareService.ListHardwares:output_type -> hardware.v1.ListHardwaresResponse
 	13, // [13:15] is the sub-list for method output_type
 	11, // [11:13] is the sub-list for method input_type
 	11, // [11:11] is the sub-list for extension type_name
@@ -878,13 +878,13 @@ func file_hardware_v1_hardware_proto_init() {
 	if File_hardware_v1_hardware_proto != nil {
 		return
 	}
-	file_hardware_v1_hardware_proto_msgTypes[5].OneofWrappers = []any{}
-	file_hardware_v1_hardware_proto_msgTypes[8].OneofWrappers = []any{
+	file_hardware_v1_hardware_proto_msgTypes[5].OneofWrappers = []any{
 		(*Value_StringValue)(nil),
 		(*Value_Int64Value)(nil),
 		(*Value_DoubleValue)(nil),
 		(*Value_BoolValue)(nil),
 	}
+	file_hardware_v1_hardware_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

@@ -17,7 +17,7 @@ message PayOrderRequest {
 
 message PayOrderResponse {
   string  transaction_uuid = 1;
-  google.protobuf.Timestamp updated_at = 2;
+  google.protobuf.Timestamp created_at = 2;
 }
 
 enum PaymentMethod {

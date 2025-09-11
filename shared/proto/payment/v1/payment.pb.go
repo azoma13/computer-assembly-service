@@ -129,7 +129,7 @@ func (x *PayOrderRequest) GetPaymentMethod() PaymentMethod {
 type PayOrderResponse struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
 	TransactionUuid string                 `protobuf:"bytes,1,opt,name=transaction_uuid,json=transactionUuid,proto3" json:"transaction_uuid,omitempty"`
-	UpdatedAt       *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	CreatedAt       *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -171,9 +171,9 @@ func (x *PayOrderResponse) GetTransactionUuid() string {
 	return ""
 }
 
-func (x *PayOrderResponse) GetUpdatedAt() *timestamppb.Timestamp {
+func (x *PayOrderResponse) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
-		return x.UpdatedAt
+		return x.CreatedAt
 	}
 	return nil
 }
@@ -191,7 +191,7 @@ const file_payment_v1_payment_proto_rawDesc = "" +
 	"\x10PayOrderResponse\x12)\n" +
 	"\x10transaction_uuid\x18\x01 \x01(\tR\x0ftransactionUuid\x129\n" +
 	"\n" +
-	"updated_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt*w\n" +
+	"created_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt*w\n" +
 	"\rPaymentMethod\x12\x1c\n" +
 	"\x18PAYMENT_METHOD_UNDEFINED\x10\x00\x12\x17\n" +
 	"\x13PAYMENT_METHOD_SASH\x10\x01\x12\x17\n" +
@@ -222,7 +222,7 @@ var file_payment_v1_payment_proto_goTypes = []any{
 }
 var file_payment_v1_payment_proto_depIdxs = []int32{
 	0, // 0: payment.v1.PayOrderRequest.payment_method:type_name -> payment.v1.PaymentMethod
-	3, // 1: payment.v1.PayOrderResponse.updated_at:type_name -> google.protobuf.Timestamp
+	3, // 1: payment.v1.PayOrderResponse.created_at:type_name -> google.protobuf.Timestamp
 	1, // 2: payment.v1.PaymentService.PayOrder:input_type -> payment.v1.PayOrderRequest
 	2, // 3: payment.v1.PaymentService.PayOrder:output_type -> payment.v1.PayOrderResponse
 	3, // [3:4] is the sub-list for method output_type
