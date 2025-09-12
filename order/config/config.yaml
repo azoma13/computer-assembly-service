@@ -1,0 +1,9 @@
+app:
+  name: 'computer-assembly-service'
+  version: '1.0.0'
+
+http:
+  port: 8080
+  
+pg:
+  max_pool_size: 20

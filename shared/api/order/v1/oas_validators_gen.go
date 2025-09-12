@@ -191,9 +191,13 @@ func (s *PaymentOrderRequest) Validate() error {
 
 func (s StatusOrder) Validate() error {
 	switch s {
-	case "NOT_PAID":
+	case "EXPECT_PAYMENT":
 		return nil
 	case "PAID":
+		return nil
+	case "IN_PROGRESS":
+		return nil
+	case "COMPLETED":
 		return nil
 	case "CANCELLED":
 		return nil

@@ -1,10 +1,14 @@
 type: string
 description: |
   Статус платежа 
-    - NOT_PAID: не оплачено
+    - EXPECT_PAYMENT: ожидает оплаты
     - PAID: оплачено
+    - IN_PROGRESS: в процессе
+    - COMPLETED: выполнен
     - CANCELLED: Отменён 
 enum:
-  - NOT_PAID
+  - EXPECT_PAYMENT
   - PAID
+  - IN_PROGRESS
+  - COMPLETED
   - CANCELLED

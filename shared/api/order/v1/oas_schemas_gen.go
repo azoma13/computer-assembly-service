@@ -449,8 +449,8 @@ type Payment struct {
 	// UUID транзакции.
 	TransactionUUID uuid.UUID     `json:"transaction_uuid"`
 	PaymentMethod   PaymentMethod `json:"payment_method"`
-	// Время создания.
-	CreatedAt time.Time `json:"created_at"`
+	// Время оплаты.
+	PaymentAt OptDateTime `json:"payment_at"`
 }
 
 // GetTransactionUUID returns the value of TransactionUUID.
@@ -463,9 +463,9 @@ func (s *Payment) GetPaymentMethod() PaymentMethod {
 	return s.PaymentMethod
 }
 
-// GetCreatedAt returns the value of CreatedAt.
-func (s *Payment) GetCreatedAt() time.Time {
-	return s.CreatedAt
+// GetPaymentAt returns the value of PaymentAt.
+func (s *Payment) GetPaymentAt() OptDateTime {
+	return s.PaymentAt
 }
 
 // SetTransactionUUID sets the value of TransactionUUID.
@@ -478,9 +478,9 @@ func (s *Payment) SetPaymentMethod(val PaymentMethod) {
 	s.PaymentMethod = val
 }
 
-// SetCreatedAt sets the value of CreatedAt.
-func (s *Payment) SetCreatedAt(val time.Time) {
-	s.CreatedAt = val
+// SetPaymentAt sets the value of PaymentAt.
+func (s *Payment) SetPaymentAt(val OptDateTime) {
+	s.PaymentAt = val
 }
 
 // Способ оплаты
@@ -590,23 +590,29 @@ func (s *PaymentOrderResponse) SetCreatedAt(val time.Time) {
 func (*PaymentOrderResponse) payOrderRes() {}
 
 // Статус платежа
-// - NOT_PAID: не оплачено
+// - EXPECT_PAYMENT: ожидает оплаты
 // - PAID: оплачено
+// - IN_PROGRESS: в процессе
+// - COMPLETED: выполнен
 // - CANCELLED: Отменён.
 // Ref: #/components/schemas/status_order
 type StatusOrder string
 
 const (
-	StatusOrderNOTPAID   StatusOrder = "NOT_PAID"
-	StatusOrderPAID      StatusOrder = "PAID"
-	StatusOrderCANCELLED StatusOrder = "CANCELLED"
+	StatusOrderEXPECTPAYMENT StatusOrder = "EXPECT_PAYMENT"
+	StatusOrderPAID          StatusOrder = "PAID"
+	StatusOrderINPROGRESS    StatusOrder = "IN_PROGRESS"
+	StatusOrderCOMPLETED     StatusOrder = "COMPLETED"
+	StatusOrderCANCELLED     StatusOrder = "CANCELLED"
 )
 
 // AllValues returns all StatusOrder values.
 func (StatusOrder) AllValues() []StatusOrder {
 	return []StatusOrder{
-		StatusOrderNOTPAID,
+		StatusOrderEXPECTPAYMENT,
 		StatusOrderPAID,
+		StatusOrderINPROGRESS,
+		StatusOrderCOMPLETED,
 		StatusOrderCANCELLED,
 	}
 }
@@ -614,9 +620,13 @@ func (StatusOrder) AllValues() []StatusOrder {
 // MarshalText implements encoding.TextMarshaler.
 func (s StatusOrder) MarshalText() ([]byte, error) {
 	switch s {
-	case StatusOrderNOTPAID:
+	case StatusOrderEXPECTPAYMENT:
 		return []byte(s), nil
 	case StatusOrderPAID:
+		return []byte(s), nil
+	case StatusOrderINPROGRESS:
+		return []byte(s), nil
+	case StatusOrderCOMPLETED:
 		return []byte(s), nil
 	case StatusOrderCANCELLED:
 		return []byte(s), nil
@@ -628,11 +638,17 @@ func (s StatusOrder) MarshalText() ([]byte, error) {
 // UnmarshalText implements encoding.TextUnmarshaler.
 func (s *StatusOrder) UnmarshalText(data []byte) error {
 	switch StatusOrder(data) {
-	case StatusOrderNOTPAID:
-		*s = StatusOrderNOTPAID
+	case StatusOrderEXPECTPAYMENT:
+		*s = StatusOrderEXPECTPAYMENT
 		return nil
 	case StatusOrderPAID:
 		*s = StatusOrderPAID
+		return nil
+	case StatusOrderINPROGRESS:
+		*s = StatusOrderINPROGRESS
+		return nil
+	case StatusOrderCOMPLETED:
+		*s = StatusOrderCOMPLETED
 		return nil
 	case StatusOrderCANCELLED:
 		*s = StatusOrderCANCELLED

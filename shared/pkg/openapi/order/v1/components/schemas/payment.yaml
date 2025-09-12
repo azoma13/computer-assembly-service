@@ -10,7 +10,7 @@ properties:
     description: UUID транзакции
   payment_method:
     $ref: "../enums/payment_method.yaml"
-  created_at:
+  payment_at:
     type: string
     format: date-time
-    description: Время создания
+    description: Время оплаты

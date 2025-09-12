@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"github.com/azoma13/computer-assembly-service/order/internal/app"
+)
+
+const configPath = "order/config/config.yaml"
 
 func main() {
-	fmt.Println("Hello!")
+	app.Run(configPath)
 }

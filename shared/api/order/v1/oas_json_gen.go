@@ -1048,15 +1048,17 @@ func (s *Payment) encodeFields(e *jx.Encoder) {
 		s.PaymentMethod.Encode(e)
 	}
 	{
-		e.FieldStart("created_at")
-		json.EncodeDateTime(e, s.CreatedAt)
+		if s.PaymentAt.Set {
+			e.FieldStart("payment_at")
+			s.PaymentAt.Encode(e, json.EncodeDateTime)
+		}
 	}
 }
 
 var jsonFieldsNameOfPayment = [3]string{
 	0: "transaction_uuid",
 	1: "payment_method",
-	2: "created_at",
+	2: "payment_at",
 }
 
 // Decode decodes Payment from json.
@@ -1090,17 +1092,15 @@ func (s *Payment) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"payment_method\"")
 			}
-		case "created_at":
-			requiredBitSet[0] |= 1 << 2
+		case "payment_at":
 			if err := func() error {
-				v, err := json.DecodeDateTime(d)
-				s.CreatedAt = v
-				if err != nil {
+				s.PaymentAt.Reset()
+				if err := s.PaymentAt.Decode(d, json.DecodeDateTime); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"created_at\"")
+				return errors.Wrap(err, "decode field \"payment_at\"")
 			}
 		default:
 			return d.Skip()
@@ -1112,7 +1112,7 @@ func (s *Payment) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000111,
+		0b00000011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -1425,10 +1425,14 @@ func (s *StatusOrder) Decode(d *jx.Decoder) error {
 	}
 	// Try to use constant string.
 	switch StatusOrder(v) {
-	case StatusOrderNOTPAID:
-		*s = StatusOrderNOTPAID
+	case StatusOrderEXPECTPAYMENT:
+		*s = StatusOrderEXPECTPAYMENT
 	case StatusOrderPAID:
 		*s = StatusOrderPAID
+	case StatusOrderINPROGRESS:
+		*s = StatusOrderINPROGRESS
+	case StatusOrderCOMPLETED:
+		*s = StatusOrderCOMPLETED
 	case StatusOrderCANCELLED:
 		*s = StatusOrderCANCELLED
 	default:
