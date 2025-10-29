@@ -5,21 +5,31 @@ vars:
   GO_VERSION: '1.25.3'
   OGEN_VERSION: 'v1.12.0'
   GEN_PACKAGE_ORDER: 'order_v1'
+  PROTOC_VERSION: '32.0'
+  PROTOC_GEN_GO_VERSION: 'v1.36.8'
+  PROTOC_GEN_GO_GRPC_VERSION: 'v1.5.1'
 
 # dir
   BIN_DIR: '{{.ROOT_DIR}}/bin'
   NODE_MODULES_DIR: '{{.ROOT_DIR}}/node_modules'
   SHARED_DIR: '{{.ROOT_DIR}}/shared'
-  OPEN_API_ORDER_V1_DIR: '{{.SHARED_DIR}}/pkg/openapi/order/v1'
-  GEN_API_ORDER_V1_DIR: '{{.SHARED_DIR}}/api/order/v1'
+  OPEN_API_ORDER_V1_DIR: '{{.SHARED_DIR}}/api/order/v1'
+  GEN_API_ORDER_V1_DIR: '{{.SHARED_DIR}}/pkg/openapi/order/v1'
+  PROTO_DIR: '{{.SHARED_DIR}}/proto'
+  GEN_PROTO_V1: '{{.SHARED_DIR}}/pkg/proto'
 
 # bin
   REDOCLY_CLI: '{{.NODE_MODULES_DIR}}/.bin/redocly'
   OGEN: '{{.BIN_DIR}}/ogen'
+  PROTOC: '{{.BIN_DIR}}/protoc'
+  PROTOC_GEN_GO: '{{.BIN_DIR}}/protoc-gen-go'
+  PROTOC_GEN_GO_GRPC: '{{.BIN_DIR}}/protoc-gen-go-grpc'
 
 # file
   OPEN_API_ORDER_V1_BASE: '{{.OPEN_API_ORDER_V1_DIR}}/order.v1.openapi.yaml'
   OPEN_API_ORDER_V1_BUNDLE: '{{.OPEN_API_ORDER_V1_DIR}}/bundle/order.v1.bundle.openapi.yaml'
+  PROTO_HARDWARE_V1: '{{.PROTO_DIR}}/hardware/v1/hardware.proto'
+  PROTO_PAYMENT_V1: '{{.PROTO_DIR}}/payment/v1/payment.proto'
 
 tasks:
   npm:install:
@@ -85,3 +95,97 @@ tasks:
         cd {{.SHARED_DIR}}
         go mod tidy
         echo "✅ Успешная генерация Go-кода моделей заказов"
+
+  proto:install:
+    desc: Устанавливает buf
+    silent: true
+    cmds:
+      - |
+        if [ ! -f {{.PROTOC}} ]; then
+          echo "📦 Установка protoc..."
+          mkdir -p {{.BIN_DIR}}
+          sudo apt-get install unzip
+          curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v{{.PROTOC_VERSION}}/protoc-{{.PROTOC_VERSION}}-linux-x86_64.zip
+          unzip protoc-{{.PROTOC_VERSION}}-linux-x86_64.zip
+          sudo rm -rf readme.txt protoc-{{.PROTOC_VERSION}}-linux-x86_64.zip
+          cp -r include/google {{.PROTO_DIR}} && rm -R ./include
+          sudo apt-get remove -y unzip
+          echo "✅ protoc успешно установлен."
+        else
+          echo "✅ protoc уже установлен."
+        fi
+
+  proto-plugins:install:
+    desc: Устанавливает protoc плагины
+    silent: true
+    deps: [ proto:install ]
+    cmds:
+      - |
+        if [ ! -f {{.PROTOC_GEN_GO}} ]; then
+          echo '📦 Installing protoc-gen-go...'
+          GOBIN={{.BIN_DIR}} go install google.golang.org/protobuf/cmd/protoc-gen-go@{{.PROTOC_GEN_GO_VERSION}}
+          echo "✅ protoc-gen-go успешно установлен."
+        else
+          echo "✅ protoc-gen-go уже установлен."
+        fi
+        if [ ! -f {{.PROTOC_GEN_GO_GRPC}} ]; then
+          echo '📦 Installing protoc-gen-go-grpc...'
+          GOBIN={{.BIN_DIR}} go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@{{.PROTOC_GEN_GO_GRPC_VERSION}}
+          echo "✅ protoc-gen-go-grpc успешно установлен."
+        else
+          echo "✅ protoc-gen-go-grpc уже установлен."
+        fi
+  
+  proto:gen-hardware:
+    desc: Генерация Go-кода из proto-файла для сервиса заказа
+    silent: true
+    deps: [ proto-plugins:install ]
+    cmds:
+      - |
+        echo "⏳Генерация Go-кода из proto-файла для сервиса заказа..."
+        {{.PROTOC}} -I {{.PROTO_DIR}} {{.PROTO_HARDWARE_V1}} --go_out={{.GEN_PROTO_V1}} --go_opt=paths=source_relative --plugin=bin/protoc-gen-go --go-grpc_out={{.GEN_PROTO_V1}} --go-grpc_opt=paths=source_relative --plugin=bin/protoc-gen-go-grpc
+        cd {{.SHARED_DIR}}
+        go mod tidy
+        echo "✅ Успешная генерация Go-кода из proto-файла для сервиса заказа"
+
+  proto:gen-hardware-no-deps:
+    desc: Генерация Go-кода из proto-файла для сервиса заказа
+    silent: true
+    cmds:
+      - |
+        echo "⏳Генерация Go-кода из proto-файла для сервиса заказа..."
+        {{.PROTOC}} -I {{.PROTO_DIR}} {{.PROTO_HARDWARE_V1}} --go_out={{.GEN_PROTO_V1}} --go_opt=paths=source_relative --plugin=bin/protoc-gen-go --go-grpc_out={{.GEN_PROTO_V1}} --go-grpc_opt=paths=source_relative --plugin=bin/protoc-gen-go-grpc
+        cd {{.SHARED_DIR}}
+        go mod tidy
+        echo "✅ Успешная генерация Go-кода из proto-файла для сервиса заказа"
+
+  proto:gen-payment:
+    desc: Генерация Go-кода из proto-файла для сервиса оплаты
+    silent: true
+    deps: [ proto-plugins:install ]
+    cmds:
+      - |
+        echo "⏳Генерация Go-кода из proto-файла для сервиса оплаты..."
+        {{.PROTOC}} -I {{.PROTO_DIR}} {{.PROTO_PAYMENT_V1}} --go_out={{.GEN_PROTO_V1}} --go_opt=paths=source_relative --plugin=bin/protoc-gen-go --go-grpc_out={{.GEN_PROTO_V1}} --go-grpc_opt=paths=source_relative --plugin=bin/protoc-gen-go-grpc
+        cd {{.SHARED_DIR}}
+        go mod tidy
+        echo "✅ Успешная генерация Go-кода из proto-файла для сервиса оплаты"
+
+  proto:gen-payment-no-deps:
+    desc: Генерация Go-кода из proto-файла для сервиса оплаты
+    silent: true
+    cmds:
+      - |
+        echo "⏳Генерация Go-кода из proto-файла для сервиса оплаты..."
+        {{.PROTOC}} -I {{.PROTO_DIR}} {{.PROTO_PAYMENT_V1}} --go_out={{.GEN_PROTO_V1}} --go_opt=paths=source_relative --plugin=bin/protoc-gen-go --go-grpc_out={{.GEN_PROTO_V1}} --go-grpc_opt=paths=source_relative --plugin=bin/protoc-gen-go-grpc
+        cd {{.SHARED_DIR}}
+        go mod tidy
+        echo "✅ Успешная генерация Go-кода из proto-файла для сервиса оплаты"
+
+  proto:gen:
+    desc: Генерация Go-кода из proto-файла для сервиса заказа
+    silent: true
+    deps: [ proto-plugins:install ]
+    cmds:
+      - task: proto:gen-hardware-no-deps
+      - task: proto:gen-payment-no-deps
