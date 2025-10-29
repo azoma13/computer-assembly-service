@@ -1,0 +1,87 @@
+version: '3'
+
+vars:
+#version
+  GO_VERSION: '1.25.3'
+  OGEN_VERSION: 'v1.12.0'
+  GEN_PACKAGE_ORDER: 'order_v1'
+
+# dir
+  BIN_DIR: '{{.ROOT_DIR}}/bin'
+  NODE_MODULES_DIR: '{{.ROOT_DIR}}/node_modules'
+  SHARED_DIR: '{{.ROOT_DIR}}/shared'
+  OPEN_API_ORDER_V1_DIR: '{{.SHARED_DIR}}/pkg/openapi/order/v1'
+  GEN_API_ORDER_V1_DIR: '{{.SHARED_DIR}}/api/order/v1'
+
+# bin
+  REDOCLY_CLI: '{{.NODE_MODULES_DIR}}/.bin/redocly'
+  OGEN: '{{.BIN_DIR}}/ogen'
+
+# file
+  OPEN_API_ORDER_V1_BASE: '{{.OPEN_API_ORDER_V1_DIR}}/order.v1.openapi.yaml'
+  OPEN_API_ORDER_V1_BUNDLE: '{{.OPEN_API_ORDER_V1_DIR}}/bundle/order.v1.bundle.openapi.yaml'
+
+tasks:
+  npm:install:
+    desc: Проверяет наличия npm и устанавливает, если отсутствует
+    silent: true
+    cmds:
+      - |
+        if ! command -v npm &> /dev/null; then
+          echo "📦 Установка npm..."
+          curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          echo "✅ npm успешно установлен."
+        else
+          echo "✅ npm уже установлен."
+        fi
+  
+  redocly-cli:install:
+    desc: Устанавливает redocly-cli
+    silent: true
+    deps: [ npm:install ]
+    cmds:
+      - |
+        if [ ! -d "node_modules" ] || [ ! -f "{{.REDOCLY_CLI}}" ]; then
+          echo "📦 Установка redocly-cli..."
+          npm install @redocly/cli --save-dev
+          echo "✅ redocly-cli успешно установлен."
+        else
+          echo "✅ redocly-cli уже установлен."
+        fi
+
+  redocly-cli:order-v1-bundle:
+    desc: Собирает OpenAPI в один файл через redocly-cli
+    silent: true
+    deps: [ redocly-cli:install ]
+    cmds:
+      - |
+        echo "⏳Собирает OpenAPI в один файл через redocly-cli..."
+        {{.REDOCLY_CLI}} bundle {{.OPEN_API_ORDER_V1_BASE}} -o {{.OPEN_API_ORDER_V1_BUNDLE}}
+        echo "✅ Успешная сборка OpenAPI в один файл через redocly-cli"
+        
+  ogen:install:
+    desc: Скачивает ogen в папку bin
+    silent: true
+    cmds:
+      - |
+        if [ ! -f {{.OGEN}} ]; then
+          echo "📦 Установка ogen..."
+          mkdir -p {{.BIN_DIR}}
+          GOBIN={{.BIN_DIR}} go install github.com/ogen-go/ogen/cmd/ogen@{{.OGEN_VERSION}}
+          echo "✅ ogen успешно установлен."
+        else
+          echo "✅ ogen уже установлен."
+        fi
+
+  ogen:gen-order:
+    desc: Генерирует Go-кода моделей заказов из OpenAPI-декларации
+    silent: true
+    deps: [ redocly-cli:order-v1-bundle, ogen:install ]
+    cmds: 
+      - |
+        echo "⏳Генерация Go-кода моделей заказов из OpenAPI-декларации..."
+        {{.OGEN}} -target {{.GEN_API_ORDER_V1_DIR}} --package={{.GEN_PACKAGE_ORDER}} --clean {{.OPEN_API_ORDER_V1_BUNDLE}}
+        cd {{.SHARED_DIR}}
+        go mod tidy
+        echo "✅ Успешная генерация Go-кода моделей заказов"

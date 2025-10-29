@@ -1,0 +1,16 @@
+type: object
+required:
+  - transaction_uuid
+  - payment_method
+  - created_at
+properties:
+  transaction_uuid:
+    type: string
+    format: uuid
+    description: UUID транзакции
+  payment_method:
+    $ref: ../enums/payment_method.yaml
+  payment_at:
+    type: string
+    format: date-time
+    description: Время оплаты

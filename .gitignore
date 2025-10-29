@@ -1,0 +1,5 @@
+/node_modules
+/shared/pkg/openapi/order/v1/bundle
+package-lock.json
+package.json
+/bin

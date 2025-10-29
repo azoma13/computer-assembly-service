@@ -1,0 +1,40 @@
+type: object
+required:
+  - order_uuid
+  - user_uuid
+  - hardware_uuids
+  - total_price
+  - status
+  - created_at
+properties:
+  order_uuid:
+    type: string
+    format: uuid
+    description: UUID заказа
+  user_uuid:
+    type: string
+    format: uuid
+    description: UUID пользователя
+  hardware_uuids:
+    type: array
+    description: Список комплектующих
+    items:
+      type: string
+      format: uuid
+      description: UUID комплектующего
+  total_price:
+    type: number
+    format: float
+    description: Стоимость заказа
+  payment:
+    $ref: ./payment.yaml
+  status:
+    $ref: ../enums/status.yaml
+  updated_at:
+    type: string
+    format: date-time
+    description: Время последнего обновления
+  created_at:
+    type: string
+    format: date-time
+    description: Время создания

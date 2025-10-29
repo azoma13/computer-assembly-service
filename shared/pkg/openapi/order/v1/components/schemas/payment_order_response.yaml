@@ -1,0 +1,13 @@
+type: object
+required:
+  - transaction_uuid
+  - created_at
+properties:
+  transaction_uuid:
+    type: string
+    format: uuid
+    description: Уникальный идентификатор транзакции
+  created_at:
+    type: string
+    format: date-time
+    description: Время последнего обновления
