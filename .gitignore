@@ -1,5 +1,6 @@
 /node_modules
-/shared/pkg/openapi/order/v1/bundle
+/shared/api/order/v1/bundle
+/shared/proto/google
 package-lock.json
 package.json
 /bin
