@@ -77,7 +77,8 @@ func (PaymentMethod) EnumDescriptor() ([]byte, []int) {
 type PayOrderRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	OrderUuid     string                 `protobuf:"bytes,1,opt,name=order_uuid,json=orderUuid,proto3" json:"order_uuid,omitempty"`
-	PaymentMethod PaymentMethod          `protobuf:"varint,2,opt,name=payment_method,json=paymentMethod,proto3,enum=payment.v1.PaymentMethod" json:"payment_method,omitempty"`
+	UserUuid      string                 `protobuf:"bytes,2,opt,name=user_uuid,json=userUuid,proto3" json:"user_uuid,omitempty"`
+	PaymentMethod PaymentMethod          `protobuf:"varint,3,opt,name=payment_method,json=paymentMethod,proto3,enum=payment.v1.PaymentMethod" json:"payment_method,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -115,6 +116,13 @@ func (*PayOrderRequest) Descriptor() ([]byte, []int) {
 func (x *PayOrderRequest) GetOrderUuid() string {
 	if x != nil {
 		return x.OrderUuid
+	}
+	return ""
+}
+
+func (x *PayOrderRequest) GetUserUuid() string {
+	if x != nil {
+		return x.UserUuid
 	}
 	return ""
 }
@@ -183,11 +191,12 @@ var File_payment_v1_payment_proto protoreflect.FileDescriptor
 const file_payment_v1_payment_proto_rawDesc = "" +
 	"\n" +
 	"\x18payment/v1/payment.proto\x12\n" +
-	"payment.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"r\n" +
+	"payment.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8f\x01\n" +
 	"\x0fPayOrderRequest\x12\x1d\n" +
 	"\n" +
-	"order_uuid\x18\x01 \x01(\tR\torderUuid\x12@\n" +
-	"\x0epayment_method\x18\x02 \x01(\x0e2\x19.payment.v1.PaymentMethodR\rpaymentMethod\"x\n" +
+	"order_uuid\x18\x01 \x01(\tR\torderUuid\x12\x1b\n" +
+	"\tuser_uuid\x18\x02 \x01(\tR\buserUuid\x12@\n" +
+	"\x0epayment_method\x18\x03 \x01(\x0e2\x19.payment.v1.PaymentMethodR\rpaymentMethod\"x\n" +
 	"\x10PayOrderResponse\x12)\n" +
 	"\x10transaction_uuid\x18\x01 \x01(\tR\x0ftransactionUuid\x129\n" +
 	"\n" +

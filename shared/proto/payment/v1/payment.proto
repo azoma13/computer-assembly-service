@@ -12,7 +12,8 @@ service PaymentService {
 
 message PayOrderRequest {
   string  order_uuid = 1;
-  PaymentMethod payment_method = 2;
+  string user_uuid = 2;
+  PaymentMethod payment_method = 3;
 }
 
 message PayOrderResponse {

@@ -30,7 +30,7 @@ message Hardware {
     Dimensions dimensions = 7;
     Manufacturer manufacturer = 8;
     repeated string tags = 9;
-    map<string, Value> metadate = 10;
+    map<string, Value> metadata = 10;
     google.protobuf.Timestamp updated_at = 11;
     google.protobuf.Timestamp created_at = 12;
 }

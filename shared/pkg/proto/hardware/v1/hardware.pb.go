@@ -191,7 +191,7 @@ type Hardware struct {
 	Dimensions    *Dimensions            `protobuf:"bytes,7,opt,name=dimensions,proto3" json:"dimensions,omitempty"`
 	Manufacturer  *Manufacturer          `protobuf:"bytes,8,opt,name=manufacturer,proto3" json:"manufacturer,omitempty"`
 	Tags          []string               `protobuf:"bytes,9,rep,name=tags,proto3" json:"tags,omitempty"`
-	Metadate      map[string]*Value      `protobuf:"bytes,10,rep,name=metadate,proto3" json:"metadate,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Metadata      map[string]*Value      `protobuf:"bytes,10,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -291,9 +291,9 @@ func (x *Hardware) GetTags() []string {
 	return nil
 }
 
-func (x *Hardware) GetMetadate() map[string]*Value {
+func (x *Hardware) GetMetadata() map[string]*Value {
 	if x != nil {
-		return x.Metadate
+		return x.Metadata
 	}
 	return nil
 }
@@ -763,13 +763,13 @@ const file_hardware_v1_hardware_proto_rawDesc = "" +
 	"dimensions\x12=\n" +
 	"\fmanufacturer\x18\b \x01(\v2\x19.hardware.v1.ManufacturerR\fmanufacturer\x12\x12\n" +
 	"\x04tags\x18\t \x03(\tR\x04tags\x12?\n" +
-	"\bmetadate\x18\n" +
-	" \x03(\v2#.hardware.v1.Hardware.MetadateEntryR\bmetadate\x129\n" +
+	"\bmetadata\x18\n" +
+	" \x03(\v2#.hardware.v1.Hardware.MetadataEntryR\bmetadata\x129\n" +
 	"\n" +
 	"updated_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x129\n" +
 	"\n" +
 	"created_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x1aO\n" +
-	"\rMetadateEntry\x12\x10\n" +
+	"\rMetadataEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12(\n" +
 	"\x05value\x18\x02 \x01(\v2\x12.hardware.v1.ValueR\x05value:\x028\x01\"j\n" +
 	"\n" +
@@ -847,7 +847,7 @@ var file_hardware_v1_hardware_proto_goTypes = []any{
 	(*ListHardwaresRequest)(nil),  // 7: hardware.v1.ListHardwaresRequest
 	(*ListHardwaresResponse)(nil), // 8: hardware.v1.ListHardwaresResponse
 	(*HardwaresFilter)(nil),       // 9: hardware.v1.HardwaresFilter
-	nil,                           // 10: hardware.v1.Hardware.MetadateEntry
+	nil,                           // 10: hardware.v1.Hardware.MetadataEntry
 	(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
 }
 var file_hardware_v1_hardware_proto_depIdxs = []int32{
@@ -855,13 +855,13 @@ var file_hardware_v1_hardware_proto_depIdxs = []int32{
 	0,  // 1: hardware.v1.Hardware.category:type_name -> hardware.v1.Category
 	4,  // 2: hardware.v1.Hardware.dimensions:type_name -> hardware.v1.Dimensions
 	5,  // 3: hardware.v1.Hardware.manufacturer:type_name -> hardware.v1.Manufacturer
-	10, // 4: hardware.v1.Hardware.metadate:type_name -> hardware.v1.Hardware.MetadateEntry
+	10, // 4: hardware.v1.Hardware.metadata:type_name -> hardware.v1.Hardware.MetadataEntry
 	11, // 5: hardware.v1.Hardware.updated_at:type_name -> google.protobuf.Timestamp
 	11, // 6: hardware.v1.Hardware.created_at:type_name -> google.protobuf.Timestamp
 	9,  // 7: hardware.v1.ListHardwaresRequest.filter:type_name -> hardware.v1.HardwaresFilter
 	3,  // 8: hardware.v1.ListHardwaresResponse.hardwares:type_name -> hardware.v1.Hardware
 	0,  // 9: hardware.v1.HardwaresFilter.categories:type_name -> hardware.v1.Category
-	6,  // 10: hardware.v1.Hardware.MetadateEntry.value:type_name -> hardware.v1.Value
+	6,  // 10: hardware.v1.Hardware.MetadataEntry.value:type_name -> hardware.v1.Value
 	1,  // 11: hardware.v1.HardwareService.GetHardware:input_type -> hardware.v1.GetHardwareRequest
 	7,  // 12: hardware.v1.HardwareService.ListHardwares:input_type -> hardware.v1.ListHardwaresRequest
 	2,  // 13: hardware.v1.HardwareService.GetHardware:output_type -> hardware.v1.GetHardwareResponse
