@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+package hardware.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/azoma13/computer-assembly-service/shared/proto/hardware/v1;hardware_v1";
+
+service HardwareService {
+  rpc GetHardware(GetHardwareRequest) returns (GetHardwareResponse);
+  rpc ListHardwares(ListHardwaresRequest) returns (ListHardwaresResponse);
+}
+
+// GetHardwareRequest предоставляет запрос на получение компонента по UUID
+message GetHardwareRequest {
+    string uuid = 1;
+}
+
+// GetHardwareResponse предоставляет ответ на получение компонентов по UUID
+message GetHardwareResponse {
+    Hardware hardware = 1;
+}
+
+// Hardware это структура описание компонента
+message Hardware {
+    string uuid = 1;
+    string name = 2;
+    string description = 3;
+    double price = 4;
+    int64 quantity_stock = 5;
+    Category category = 6;
+    Dimensions dimensions = 7;
+    Manufacturer manufacturer = 8;
+    repeated string tags = 9;
+    map<string, Value> metadata = 10;
+    google.protobuf.Timestamp updated_at = 11;
+    google.protobuf.Timestamp created_at = 12;
+}
+
+// Category - enum возможных категорий компонента 
+enum Category {
+    CATEGORY_UNSPECIFIED = 0;
+    CATEGORY_MOTHERBOARD = 1;
+    CATEGORY_CPU = 2;
+    CATEGORY_CPU_COOLER = 3;
+    CATEGORY_PSU = 4;
+    CATEGORY_SSD = 5;
+    CATEGORY_HHD = 6;
+    CATEGORY_RAM = 7;
+    CATEGORY_VIDEO_CARD = 8;
+    CATEGORY_CASE = 9;
+    reserved 10 to 32;
+}
+
+// Dimensions - размеры деталей
+message Dimensions {
+    double length = 1;
+    double width = 2;
+    double height = 3;
+    double weight = 4;
+}
+
+// Manufacturer - информация о производителе
+message Manufacturer {
+    string name = 1;
+    string country = 2;
+    string website = 3;
+}
+
+// Value - мета информация
+message Value {
+  oneof kind {
+    string string_value = 1;
+    int64 int64_value = 2;
+    double double_value = 3;
+    bool bool_value = 4;
+  }
+}
+
+// ListHardwaresRequest представляет запрос на получение списка компонентов по фильтрам.
+message ListHardwaresRequest {
+  optional HardwaresFilter filter = 1;
+}
+
+// ListHardwaresResponse представляет ответ на получение списка компонентов по фильтрам.
+message ListHardwaresResponse {
+  repeated Hardware hardwares = 1;
+}
+
+// PartsFilter - возможные фильтры для получения списка компонентов
+message HardwaresFilter {
+  repeated string uuids = 1;
+  repeated string names = 2;
+  double min_price = 3;
+  double max_price = 4;
+  int64 quantity_stock = 5;
+  repeated Category categories = 6;
+  repeated string manufacturer_countries = 7;
+  repeated string tags = 8;
+}
