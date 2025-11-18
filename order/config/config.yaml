@@ -1,0 +1,7 @@
+app:
+  name: computer-assembly-service
+  version: 0.0.1
+
+pg:
+  max_pool_size: 20
+  
