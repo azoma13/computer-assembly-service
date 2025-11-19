@@ -80,7 +80,7 @@ func Run(configPath string) {
 	service := service.NewService(deps)
 
 	log.Println("Initializing routes...")
-	api := v1.NewOrderAPI(service.Order)
+	api := v1.NewOrderAPI(*service)
 	orderServer, err := order_v1.NewServer(api)
 
 	r := chi.NewRouter()

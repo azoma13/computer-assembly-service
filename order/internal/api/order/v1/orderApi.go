@@ -8,8 +8,8 @@ type orderAPI struct {
 	orderService service.Order
 }
 
-func NewOrderAPI(serviceOrder service.Order) *orderAPI {
+func NewOrderAPI(service service.Services) *orderAPI {
 	return &orderAPI{
-		orderService: serviceOrder,
+		orderService: service.Order,
 	}
 }
