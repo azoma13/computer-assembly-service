@@ -1,4 +1,4 @@
-package hardware
+package service
 
 import "github.com/azoma13/computer-assembly-service/hardware/internal/repo"
 

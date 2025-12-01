@@ -41,7 +41,7 @@ func Run(configPath string) {
 	s := grpc.NewServer()
 
 	log.Println("Initializing repositories...")
-	repositories := repo.NewRepositories(mg)
+	repositories := repo.NewRepositories(mg, cfg.Mongo.Db)
 
 	log.Println("Initializing service...")
 	deps := service.ServicesDependencies{

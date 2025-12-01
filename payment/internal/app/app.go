@@ -27,7 +27,7 @@ func Run(configPath string) {
 		log.Fatal("failed to listen: %w", err)
 	}
 	defer func() {
-		if serverr := lis.Close(); serverr != nil {
+		if servErr := lis.Close(); servErr != nil {
 			log.Println("failed close to listen server")
 		}
 	}()

@@ -4,3 +4,5 @@ package.json
 bin
 shared/api/order/v1/bundle
 order/.env
+hardware/.env
+payment/.env

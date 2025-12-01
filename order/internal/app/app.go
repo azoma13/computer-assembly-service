@@ -29,25 +29,25 @@ import (
 func Run(configPath string) {
 	cfg, err := config.NewConfig(configPath)
 	if err != nil {
-		log.Fatal("app - Run - config.NewConfig: %w", err)
+		log.Fatalf("app - Run - config.NewConfig: %v", err)
 	}
 
 	log.Println("Initializing postgres...")
 	pg, err := postgres.New(cfg.Pg.URL, postgres.MaxPoolSize(cfg.Pg.MaxPoolSize))
 	if err != nil {
-		log.Fatal("app - Run - postgres.New: %w", err)
+		log.Fatalf("app - Run - postgres.New: %v", err)
 	}
 	defer pg.Close()
 
 	err = pg.AutoMigrate(&repoModels.Order{})
 	if err != nil {
-		log.Fatal("app - Run - AutoMigrate: %w", err)
+		log.Fatalf("app - Run - AutoMigrate: %v", err)
 	}
 
 	log.Println("Initializing hardware client...")
 	hardwareConnect, err := grpc.NewClient(cfg.Grpc.Hardware, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatal("app - Run - grpc.NewClient(Hardware): %w", err)
+		log.Fatalf("app - Run - grpc.NewClient(Hardware): %v", err)
 	}
 	hardwareClient := hardwareClient.NewHardwareClient(hardware_v1.NewHardwareServiceClient(hardwareConnect))
 	defer func() {
@@ -59,7 +59,7 @@ func Run(configPath string) {
 	log.Println("Initializing payment client...")
 	paymentConnect, err := grpc.NewClient(cfg.Grpc.Payment, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatal("app - Run - grpc.NewClient(Payment): %w", err)
+		log.Fatalf("app - Run - grpc.NewClient(Payment): %v", err)
 	}
 	paymentClient := paymentClient.NewPaymentClient(payment_v1.NewPaymentServiceClient(paymentConnect))
 	defer func() {

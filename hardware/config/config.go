@@ -26,6 +26,7 @@ type (
 
 	Mongo struct {
 		Url string `yaml:"url" env-required:"true" env:"MONGO_URL"`
+		Db  string `yaml:"db" env-required:"true" env:"MONGO_DB"`
 
 		MaxPoolSize int `yaml:"max_pool_size" env-required:"true" env:"MONGO_MAX_POOL_SIZE"`
 	}

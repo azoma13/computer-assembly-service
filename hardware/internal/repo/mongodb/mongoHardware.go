@@ -17,8 +17,8 @@ type hardwareRepo struct {
 	collection *mongo.Collection
 }
 
-func NewHardwareRepo(mg *mongoPkg.Mongo) *hardwareRepo {
-	collection := mg.MongoDB.Collection("hardwares")
+func NewHardwareRepo(mg *mongoPkg.Mongo, db string) *hardwareRepo {
+	collection := mg.MongoClient.Database(db).Collection("hardwares")
 
 	indexModels := []mongo.IndexModel{
 		{

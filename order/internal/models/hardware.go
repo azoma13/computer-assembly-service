@@ -28,7 +28,7 @@ type (
 		Dimensions    Dimensions
 		Manufacturer  Manufacturer
 		Tags          []string
-		Metadata      Metadata
+		Metadata      map[string]Metadata
 		UpdatedAt     *time.Time
 		CreatedAt     time.Time
 	}

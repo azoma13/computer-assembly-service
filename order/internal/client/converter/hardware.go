@@ -65,14 +65,15 @@ func ManufacturerToModel(protoManufacturer *hardware_v1.Manufacturer) models.Man
 	}
 }
 
-func MetadataToModel(protoMetadata map[string]*hardware_v1.Value) models.Metadata {
-	metadata := models.Metadata{}
+func MetadataToModel(protoMetadata map[string]*hardware_v1.Value) map[string]models.Metadata {
+	m := make(map[string]models.Metadata)
 
-	for _, value := range protoMetadata {
+	for key, value := range protoMetadata {
 		if value == nil {
 			continue
 		}
 
+		metadata := models.Metadata{}
 		switch v := value.Kind.(type) {
 		case *hardware_v1.Value_StringValue:
 			metadata.StringValue = lo.ToPtr(v.StringValue)
@@ -83,9 +84,10 @@ func MetadataToModel(protoMetadata map[string]*hardware_v1.Value) models.Metadat
 		case *hardware_v1.Value_DoubleValue:
 			metadata.DoubleValue = lo.ToPtr(v.DoubleValue)
 		}
+		m[key] = metadata
 	}
 
-	return metadata
+	return m
 }
 
 func HardwareFilterToProto(modelHardwareFilter models.HardwareFilter) *hardware_v1.HardwaresFilter {
