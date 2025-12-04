@@ -20,6 +20,8 @@ type (
 	}
 
 	Grpc struct {
+		Port string `yaml:"port" env-required:"true" env:"GRPC_PORT"`
+		Host string `yaml:"host" env-required:"host" env:"GRPC_HOST"`
 		Addr string `yaml:"addr" env-required:"true" env:"GRPC_ADDR"`
 	}
 )

@@ -1,0 +1,16 @@
+services:
+
+  app:
+    container_name: cas-payment
+    build: .
+    volumes:
+      - ./secrets:/secrets
+    env_file:
+      - .env
+    ports:
+      - "${GRPC_PORT}:8080"
+    restart: unless-stopped
+
+networks:
+  cas-net:
+    external: true

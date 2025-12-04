@@ -1,7 +1,7 @@
 github.com/BurntSushi/toml v1.2.1 h1:9F2/+DoOYIOksmaJFPw1tGFy1eDnIJXg+UHjuD8lTak=
 github.com/BurntSushi/toml v1.2.1/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
-github.com/azoma13/computer-assembly-service/shared v0.0.0-20251031235243-f53be4ebd5d2 h1:TNdr86w/k0G2pna0ToyXrBwnnRrse2rFf6N0Ay4ch8Q=
-github.com/azoma13/computer-assembly-service/shared v0.0.0-20251031235243-f53be4ebd5d2/go.mod h1:gssL51j4FrmVOxibKp7l7guwxlFKbEjFQNVl7mgQxEM=
+github.com/azoma13/computer-assembly-service/shared v0.0.0-20251204170413-909c6ea01856 h1:R43RFqn96Ik6YdT2S1/47ifwi30kua6mzBr2suL4lqk=
+github.com/azoma13/computer-assembly-service/shared v0.0.0-20251204170413-909c6ea01856/go.mod h1:tFiKsTVjlG2bZZ+oPWG9SCpEj4vd7YrIj2xMO3Tkhqw=
 github.com/go-logr/logr v1.4.3 h1:CjnDlHq8ikf6E492q6eKboGOC0T8CDaOvkHCIg8idEI=
 github.com/go-logr/logr v1.4.3/go.mod h1:9T104GzyrTigFIr8wt5mBrctHMim0Nb2HLGrmQ40KvY=
 github.com/go-logr/stdr v1.2.2 h1:hSWxHoqTgW2S2qGc0LTAI563KZ5YKYRhT3MFKZMbjag=

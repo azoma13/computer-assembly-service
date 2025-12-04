@@ -3,7 +3,7 @@ module github.com/azoma13/computer-assembly-service/payment
 go 1.25.3
 
 require (
-	github.com/azoma13/computer-assembly-service/shared v0.0.0-20251031235243-f53be4ebd5d2
+	github.com/azoma13/computer-assembly-service/shared v0.0.0-20251204170413-909c6ea01856
 	github.com/google/uuid v1.6.0
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/joho/godotenv v1.5.1
