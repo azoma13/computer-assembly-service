@@ -10,11 +10,7 @@ import (
 )
 
 const (
-<<<<<<< HEAD
-	defaultMaxPoolSize  = 1
-=======
 	defaultMaxPoolSize  = 20
->>>>>>> new
 	defaultConnAttempts = 10
 	defaultConnTimeout  = time.Second
 )
@@ -41,10 +37,6 @@ func New(url string, opts ...Option) (*Postgres, error) {
 
 	var err error = nil
 	for ; pg.connAttempts > 0; pg.connAttempts-- {
-<<<<<<< HEAD
-		log.Println(url)
-=======
->>>>>>> new
 		pg.GormDB, err = gorm.Open(postgres.New(postgres.Config{
 			DSN: url,
 		}), &gorm.Config{})
