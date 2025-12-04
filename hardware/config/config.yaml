@@ -1,0 +1,6 @@
+app:
+  name: cas-hardware
+  version: 0.0.1
+
+mongo:
+  max_pool_size: 20

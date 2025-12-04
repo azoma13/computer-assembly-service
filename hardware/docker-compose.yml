@@ -1,0 +1,37 @@
+services:
+
+  mongodb:
+    container_name: cas-hardware-mg
+    image: mongo:8.0.16
+    volumes:
+      - mg-hardware-data:/var/lib/mongodb/data
+    env_file:
+      - .env
+    ports:
+      - "${MONGO_PORT}:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "echo 'db.runCommand({ping: 1}).ok' | mongosh  --quiet -u ${MONGO_USER} -p ${MONGO_PASSWORD} --authenticationDatabase ${MONGO_AUTH}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5 
+    restart: unless-stopped
+
+  app:
+    container_name: cas-hardware
+    build: .
+    volumes:
+      - ./secrets:/secrets
+    env_file:
+      - .env
+    ports:
+      - "${GRPC_PORT}:8080"
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+volumes:
+   mg-hardware-data:
+
+networks:
+  cas-net:
+    external: true

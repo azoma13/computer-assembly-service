@@ -23,20 +23,20 @@ const (
 
 type (
 	Order struct {
-		UUID          string      `json:"uuid"`
-		UserUUID      string      `json:"user_uuid"`
-		HardwareUUIDs []string    `json:"hardware_uuids"`
-		TotalPrice    float64     `json:"total_price"`
-		Payment       *Payment    `json:"payment,omitempty"`
-		Status        OrderStatus `json:"status"`
-		UpdatedAt     *time.Time  `json:"updated_at,omitempty"`
-		CreatedAt     time.Time   `json:"created_at"`
+		UUID          string
+		UserUUID      string
+		HardwareUUIDs []string
+		TotalPrice    float64
+		Payment       *Payment
+		Status        OrderStatus
+		UpdatedAt     *time.Time
+		CreatedAt     time.Time
 	}
 
 	Payment struct {
-		TransactionUUID string         `json:"transaction_uuid"`
-		PaymentMethod   *PaymentMethod `json:"payment_method"`
-		PaymentAt       time.Time      `json:"payment_at"`
+		TransactionUUID string
+		PaymentMethod   *PaymentMethod
+		PaymentAt       time.Time
 	}
 
 	PayOrderInfo struct {
