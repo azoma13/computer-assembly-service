@@ -1,0 +1,12 @@
+type: string
+description: |
+  Способ оплаты
+  - UNDEFINED: не определенный
+  - CASH: оплата наличными
+  - CARD: оплата картой
+  - SBP: оплата через СБП
+enum:
+  - UNDEFINED
+  - CASH
+  - CARD
+  - SBP

@@ -4,22 +4,37 @@ vars:
 #version
   GO_VERSION: '1.25.3'
   OGEN_VERSION: 'v1.12.0'
-  GEN_PACKAGE_ORDER: 'order_v1'
+  BUF_VERSION: '1.59.0'
+  PROTOC_GEN_GO_VERSION: 'v1.36.8'
+  PROTOC_GEN_GO_GRPC_VERSION: 'v1.5.1'
+  PROTOC_GEN_GO_VALIDATE_VERSION: 'v1.2.1'
+
+  GEN_ORDER_V1_PACKAGE: 'order_v1'
 
 # dir
   BIN_DIR: '{{.ROOT_DIR}}/bin'
   NODE_MODULES_DIR: '{{.ROOT_DIR}}/node_modules'
   SHARED_DIR: '{{.ROOT_DIR}}/shared'
-  OPEN_API_ORDER_V1_DIR: '{{.SHARED_DIR}}/pkg/openapi/order/v1'
-  GEN_API_ORDER_V1_DIR: '{{.SHARED_DIR}}/api/order/v1'
+
+  OPENAPI_ORDER_V1_DIR: '{{.SHARED_DIR}}/api/order/v1'
+  GEN_API_ORDER_V1_DIR: '{{.SHARED_DIR}}/pkg/openapi/order/v1'
+
+  PROTO_DIR: '{{.SHARED_DIR}}/proto'
+  GEN_PROTO_V1_DIR: '{{.SHARED_DIR}}/pkg/proto'
 
 # bin
   REDOCLY_CLI: '{{.NODE_MODULES_DIR}}/.bin/redocly'
   OGEN: '{{.BIN_DIR}}/ogen'
+  BUF: 'bin/buf'
+  PROTOC_GEN_GO: '{{.BIN_DIR}}/protoc-gen-go'
+  PROTOC_GEN_GO_GRPC: '{{.BIN_DIR}}/protoc-gen-go-grpc'
+  PROTOC_GEN_GO_VALIDATE: '{{.BIN_DIR}}/protoc-gen-go-validate'
 
 # file
-  OPEN_API_ORDER_V1_BASE: '{{.OPEN_API_ORDER_V1_DIR}}/order.v1.openapi.yaml'
-  OPEN_API_ORDER_V1_BUNDLE: '{{.OPEN_API_ORDER_V1_DIR}}/bundle/order.v1.bundle.openapi.yaml'
+  OPEN_API_ORDER_V1_BASE: '{{.OPENAPI_ORDER_V1_DIR}}/order.v1.openapi.yaml'
+  OPEN_API_ORDER_V1_BUNDLE: '{{.OPENAPI_ORDER_V1_DIR}}/bundle/order.v1.bundle.openapi.yaml'
+  PROTO_HARDWARE_V1: '{{.PROTO_DIR}}/hardware/v1/hardware.proto'
+  PROTO_PAYMENT_V1: '{{.PROTO_DIR}}/payment/v1/payment.proto'
 
 tasks:
   npm:install:
@@ -33,7 +48,7 @@ tasks:
           sudo apt-get install -y nodejs
           echo "✅ npm успешно установлен."
         else
-          echo "✅ npm уже установлен."
+          echo "✅ npm установлен."
         fi
   
   redocly-cli:install:
@@ -42,12 +57,12 @@ tasks:
     deps: [ npm:install ]
     cmds:
       - |
-        if [ ! -d "node_modules" ] || [ ! -f "{{.REDOCLY_CLI}}" ]; then
+        if [ ! -f {{.REDOCLY_CLI}} ]; then
           echo "📦 Установка redocly-cli..."
           npm install @redocly/cli --save-dev
           echo "✅ redocly-cli успешно установлен."
         else
-          echo "✅ redocly-cli уже установлен."
+          echo "✅ redocly-cli установлен."
         fi
 
   redocly-cli:order-v1-bundle:
@@ -71,7 +86,7 @@ tasks:
           GOBIN={{.BIN_DIR}} go install github.com/ogen-go/ogen/cmd/ogen@{{.OGEN_VERSION}}
           echo "✅ ogen успешно установлен."
         else
-          echo "✅ ogen уже установлен."
+          echo "✅ ogen установлен."
         fi
 
   ogen:gen-order:
@@ -81,7 +96,97 @@ tasks:
     cmds: 
       - |
         echo "⏳Генерация Go-кода моделей заказов из OpenAPI-декларации..."
-        {{.OGEN}} -target {{.GEN_API_ORDER_V1_DIR}} --package={{.GEN_PACKAGE_ORDER}} --clean {{.OPEN_API_ORDER_V1_BUNDLE}}
-        cd {{.SHARED_DIR}}
-        go mod tidy
+        {{.OGEN}} -target {{.GEN_API_ORDER_V1_DIR}} --package={{.GEN_ORDER_V1_PACKAGE}} --clean {{.OPEN_API_ORDER_V1_BUNDLE}}
         echo "✅ Успешная генерация Go-кода моделей заказов"
+
+  buf:install:
+    desc: Устанавливает buf
+    silent: true
+    cmds:
+      - |
+        if [ ! -f {{.BUF}} ]; then
+          echo "📦 Установка buf..."
+          mkdir -p tmp-buf
+          curl -SL \
+            "https://github.com/bufbuild/buf/releases/download/v{{.BUF_VERSION}}/buf-$(uname -s)-$(uname -m).tar.gz" \
+            | tar -xz -C tmp-buf
+          mv tmp-buf/buf/bin/buf {{.BIN_DIR}}
+          rm -rf tmp-buf
+          chmod +x {{.BIN_DIR}}
+          echo "✅ buf успешно установлен."
+        else
+          echo "✅ buf установлен."
+        fi
+
+  proto-plugins:install:
+    desc: Устанавливает protoc плагины
+    silent: true
+    cmds:
+      - |
+        if [ ! -f {{.PROTOC_GEN_GO}} ]; then
+          echo "📦 Installing protoc-gen-go..."
+          GOBIN={{.BIN_DIR}} go install google.golang.org/protobuf/cmd/protoc-gen-go@{{.PROTOC_GEN_GO_VERSION}}
+          echo "✅ protoc-gen-go успешно установлен."
+        else
+          echo "✅ protoc-gen-go установлен."
+        fi
+        if [ ! -f {{.PROTOC_GEN_GO_GRPC}} ]; then
+          echo "📦 Installing protoc-gen-go-grpc..."
+          GOBIN={{.BIN_DIR}} go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@{{.PROTOC_GEN_GO_GRPC_VERSION}}
+          echo "✅ protoc-gen-go-grpc успешно установлен."
+        else
+          echo "✅ protoc-gen-go-grpc установлен."
+        fi
+  
+  proto:gen:
+    desc: Генерация Go-кода из proto-файла для сервиса компонентов
+    silent: true
+    deps: [ buf:install, proto-plugins:install ]
+    cmds:
+      - |
+        echo "⏳Генерация Go-кода из proto-файла для сервиса компонентов..."
+        {{.BUF}} generate
+        echo "✅ Успешная генерация Go-кода из proto-файла для сервиса компонентов"
+
+  gen:
+    desc: Вся генерация кода api + proto
+    silent: true
+    cmds:
+      - task: ogen:gen-order
+      - task: proto:gen
+
+  delete-npm:
+    desc: "Удаляет nodejs и npm"
+    silent: true
+    cmds:
+      - |
+        sudo apt remove nodejs npm
+        sudo apt-get purge nodejs
+        sudo rm -rf /usr/local/bin/npm 
+        sudo rm -rf /usr/local/share/man/man1/node* 
+        sudo rm -rf /usr/local/lib/dtrace/node.d
+        sudo rm -rf ~/.npm
+        sudo rm -rf ~/.node-gyp
+        sudo rm -rf /opt/local/bin/node
+        sudo rm -rf /opt/local/include/node
+        sudo rm -rf /opt/local/lib/node_modules
+        sudo rm -rf /usr/local/lib/node*
+        sudo rm -rf /usr/local/include/node*
+        sudo rm -rf /usr/local/bin/node*
+        sudo rm -rf ./node_modules
+        sudo rm -rf package-lock.json
+        sudo rm -rf package.json
+        
+  delete-bin:
+    desc: "Удаляет папку bin"
+    silent: true
+    cmds:
+      - |
+        sudo rm -rf ./bin
+
+  clear:
+    desc: Очистка от мусора
+    silent: true
+    cmds:
+      - task: delete-npm
+      - task: delete-bin

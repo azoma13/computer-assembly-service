@@ -1,5 +1,8 @@
-/node_modules
-/shared/pkg/openapi/order/v1/bundle
+node_modules
 package-lock.json
 package.json
-/bin
+bin
+shared/api/order/v1/bundle
+order/.env
+hardware/.env
+payment/.env

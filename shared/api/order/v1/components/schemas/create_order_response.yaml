@@ -1,0 +1,15 @@
+type: object
+required:
+  - order_uuid
+  - total_price
+properties:
+  order_uuid:
+    type: string
+    format: uuid
+    description: UUID created order
+    example: 16763be4-6022-406e-a950-fcd5018633ca
+  total_price:
+    type: number
+    format: double
+    description: Total price order
+    example: 9999.99
